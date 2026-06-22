@@ -138,6 +138,28 @@ Runs PostgreSQL, the backend, and the frontend all as containers via Docker Comp
    - Backend API: http://localhost:5000/api
    - Login with demo credentials: `demo` / `demo`
 
+## Troubleshooting
+
+### `npm install` warns that a package's build script was blocked (e.g. `bcrypt`, `esbuild`)
+
+Newer versions of npm (11+) don't run a dependency's native install/build scripts by default for supply-chain safety. You'll see a warning like:
+
+```
+npm warn allow-scripts ... bcrypt@5.1.1 ... build script was blocked
+```
+
+`bcrypt` needs its script to compile its native binary, and `esbuild` needs it to install its platform binary — without it, `npm run dev` will fail to start. Approve and rebuild the affected package:
+
+```bash
+npm approve-scripts bcrypt   # in backend/
+npm rebuild bcrypt
+
+npm approve-scripts esbuild  # in frontend/
+npm rebuild esbuild
+```
+
+This is a one-time step per machine. Once approved, the decision is recorded in an `allowScripts` block in `package.json`, which is committed to this repo — so most clones won't hit this prompt at all.
+
 ## API Overview
 
 ### Authentication
