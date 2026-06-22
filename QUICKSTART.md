@@ -4,38 +4,46 @@ Get TaskFlow running in 5 minutes!
 
 ## Option 1: Local Development (Recommended for Development)
 
+Runs PostgreSQL in Docker and the backend/frontend directly with `npm` for fast hot-reload. No local PostgreSQL install needed.
+
 ### Prerequisites
 - Node.js 18+
-- PostgreSQL 15 (or use Docker for database only)
 - npm
+- Docker (for PostgreSQL only)
 
 ### Steps
 
 1. **Clone and Navigate**
    ```bash
+   git clone https://github.com/sahil7879/taskflow_codebase.git
    cd taskflow-codebase
    ```
 
-2. **Setup Backend**
+2. **Start PostgreSQL in Docker**
+   ```bash
+   docker run -d --name taskflow-db \
+     -e POSTGRES_DB=taskflow \
+     -e POSTGRES_USER=taskflow \
+     -e POSTGRES_PASSWORD=taskflow \
+     -p 5432:5432 \
+     postgres:15-alpine
+   ```
+
+3. **Setup Backend** (new terminal)
    ```bash
    cd backend
    npm install
    cp .env.example .env
+   npm run db:init
    npm run dev
    ```
 
-3. **In a New Terminal, Setup Frontend**
+4. **Setup Frontend** (new terminal)
    ```bash
    cd frontend
    npm install
    cp .env.example .env
    npm run dev
-   ```
-
-4. **Initialize Database (First Time Only)**
-   ```bash
-   cd backend
-   npm run db:init
    ```
 
 5. **Access the App**

@@ -72,25 +72,39 @@ taskflow-codebase/
 
 ### Prerequisites
 - Node.js 18+
-- PostgreSQL 15+ (or use Docker)
 - npm
+- Docker (used to run PostgreSQL — no local PostgreSQL install required)
 
-### Local Development
+### Local Development (recommended)
 
-1. **Clone and navigate to the project:**
+This runs the database in Docker and the backend/frontend directly with `npm`, so you get fast hot-reload without installing PostgreSQL on your machine.
+
+1. **Clone the repository:**
    ```bash
+   git clone https://github.com/sahil7879/taskflow_codebase.git
    cd taskflow-codebase
    ```
 
-2. **Setup Backend:**
+2. **Start PostgreSQL in Docker:**
+   ```bash
+   docker run -d --name taskflow-db \
+     -e POSTGRES_DB=taskflow \
+     -e POSTGRES_USER=taskflow \
+     -e POSTGRES_PASSWORD=taskflow \
+     -p 5432:5432 \
+     postgres:15-alpine
+   ```
+
+3. **Setup and start the backend** (new terminal):
    ```bash
    cd backend
    npm install
    cp .env.example .env
+   npm run db:init
    npm run dev
    ```
 
-3. **In a new terminal, setup Frontend:**
+4. **Setup and start the frontend** (new terminal):
    ```bash
    cd frontend
    npm install
@@ -98,31 +112,31 @@ taskflow-codebase/
    npm run dev
    ```
 
-4. **Initialize database (from backend directory):**
-   ```bash
-   npm run db:init
-   ```
-
 5. **Access the application:**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:5000/api
    - Login with demo credentials: `demo` / `demo`
 
-### Docker Deployment
+To stop and remove the database container later: `docker rm -f taskflow-db`.
+
+### Docker Deployment (fully containerized)
+
+Runs PostgreSQL, the backend, and the frontend all as containers via Docker Compose.
 
 1. **Start all services:**
    ```bash
    docker-compose up --build
    ```
 
-2. **Access the application:**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:5000/api
-
-3. **Initialize database:**
+2. **Initialize the database** (new terminal, first run only):
    ```bash
    docker-compose exec backend npm run db:init
    ```
+
+3. **Access the application:**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000/api
+   - Login with demo credentials: `demo` / `demo`
 
 ## API Overview
 
