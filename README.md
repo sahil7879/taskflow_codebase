@@ -82,7 +82,7 @@ This runs the database in Docker and the backend/frontend directly with `npm`, s
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/sahil7879/taskflow_codebase.git
-   cd taskflow-codebase
+   cd taskflow_codebase
    ```
 
 2. **Start PostgreSQL in Docker:**
