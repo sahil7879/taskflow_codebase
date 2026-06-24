@@ -100,9 +100,9 @@ This runs the database in Docker and the backend/frontend directly with `npm`, s
    cd backend
    npm install
    cp .env.example .env
-   npm run db:init
    npm run dev
    ```
+   The backend automatically creates the schema and seeds the demo data on startup.
 
 4. **Setup and start the frontend** (new terminal):
    ```bash
@@ -121,19 +121,14 @@ To stop and remove the database container later: `docker rm -f taskflow-db`.
 
 ### Docker Deployment (fully containerized)
 
-Runs PostgreSQL, the backend, and the frontend all as containers via Docker Compose.
+Runs PostgreSQL, the backend, and the frontend all as containers via Docker Compose. The backend automatically creates the schema and seeds the demo data on startup, so no manual init step is needed.
 
 1. **Start all services:**
    ```bash
    docker-compose up --build
    ```
 
-2. **Initialize the database** (new terminal, first run only):
-   ```bash
-   docker-compose exec backend npm run db:init
-   ```
-
-3. **Access the application:**
+2. **Access the application:**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:5000/api
    - Login with demo credentials: `demo` / `demo`

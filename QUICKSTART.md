@@ -34,9 +34,9 @@ Runs PostgreSQL in Docker and the backend/frontend directly with `npm` for fast 
    cd backend
    npm install
    cp .env.example .env
-   npm run db:init
    npm run dev
    ```
+   The backend automatically creates the schema and seeds the demo data on startup.
 
 4. **Setup Frontend** (new terminal)
    ```bash
@@ -63,18 +63,14 @@ Runs PostgreSQL in Docker and the backend/frontend directly with `npm` for fast 
    ```bash
    docker-compose up --build
    ```
+   The backend automatically creates the schema and seeds the demo data on startup — no manual init step needed.
 
-2. **Initialize Database** (in a new terminal)
-   ```bash
-   docker-compose exec backend npm run db:init
-   ```
-
-3. **Access the App**
+2. **Access the App**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:5000/api
    - Demo login: `demo` / `demo`
 
-4. **Stop Services**
+3. **Stop Services**
    ```bash
    docker-compose down
    ```
@@ -116,7 +112,7 @@ npm run start        # Run production build
 npm run test         # Run tests
 npm run lint         # Check code style
 npm run format       # Format code
-npm run db:init      # Initialize database
+npm run db:init      # Re-run schema/seed manually (runs automatically on `npm run dev`)
 ```
 
 ### Frontend

@@ -1,15 +1,5 @@
 import { Pool } from 'pg';
-import * as dotenv from 'dotenv';
-
-dotenv.config();
-
-const pool = new Pool({
-  user: process.env.DB_USER || 'taskflow',
-  password: process.env.DB_PASSWORD || 'taskflow',
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432'),
-  database: process.env.DB_NAME || 'taskflow',
-});
+import pool from './connection';
 
 const schema = `
   CREATE TABLE IF NOT EXISTS users (
@@ -69,22 +59,23 @@ const seedData = `
   ON CONFLICT DO NOTHING;
 `;
 
-async function initializeDatabase() {
-  try {
-    console.log('Initializing database...');
-    await pool.query(schema);
-    console.log('Schema created successfully');
+export async function initializeDatabase(pool: Pool): Promise<void> {
+  console.log('Initializing database...');
+  await pool.query(schema);
+  console.log('Schema created successfully');
 
-    await pool.query(seedData);
-    console.log('Seed data inserted successfully');
+  await pool.query(seedData);
+  console.log('Seed data inserted successfully');
 
-    console.log('Database initialization complete');
-    await pool.end();
-  } catch (error) {
-    console.error('Database initialization failed:', error);
-    await pool.end();
-    process.exit(1);
-  }
+  console.log('Database initialization complete');
 }
 
-initializeDatabase();
+if (require.main === module) {
+  initializeDatabase(pool)
+    .then(() => pool.end())
+    .catch(async (error) => {
+      console.error('Database initialization failed:', error);
+      await pool.end();
+      process.exit(1);
+    });
+}
