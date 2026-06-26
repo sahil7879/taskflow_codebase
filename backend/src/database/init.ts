@@ -12,7 +12,7 @@ const schema = `
 
   CREATE TABLE IF NOT EXISTS projects (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) UNIQUE NOT NULL,
     description TEXT,
     user_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -27,7 +27,8 @@ const schema = `
     status VARCHAR(50) NOT NULL DEFAULT 'todo',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE
+    FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
+    UNIQUE (project_id, title)
   );
 
   CREATE INDEX IF NOT EXISTS idx_projects_user_id ON projects(user_id);
@@ -44,7 +45,7 @@ const seedData = `
     ('Website Redesign', 'Redesign the company website', (SELECT id FROM users WHERE username = 'demo')),
     ('Mobile App', 'Build a mobile app for iOS and Android', (SELECT id FROM users WHERE username = 'demo')),
     ('API Improvements', 'Enhance API performance and reliability', (SELECT id FROM users WHERE username = 'demo'))
-  ON CONFLICT DO NOTHING;
+  ON CONFLICT (name) DO NOTHING;
 
   INSERT INTO tasks (project_id, title, description, status) VALUES
     ((SELECT id FROM projects WHERE name = 'Website Redesign'), 'Create wireframes', 'Design wireframes for new layout', 'done'),
@@ -56,7 +57,7 @@ const seedData = `
     ((SELECT id FROM projects WHERE name = 'API Improvements'), 'Optimize queries', 'Add database indexes', 'done'),
     ((SELECT id FROM projects WHERE name = 'API Improvements'), 'Add caching', 'Implement Redis caching', 'in_progress'),
     ((SELECT id FROM projects WHERE name = 'API Improvements'), 'Write documentation', 'Document API endpoints', 'todo')
-  ON CONFLICT DO NOTHING;
+  ON CONFLICT (project_id, title) DO NOTHING;
 `;
 
 export async function initializeDatabase(pool: Pool): Promise<void> {
